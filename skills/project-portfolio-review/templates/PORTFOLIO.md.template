@@ -1,0 +1,17 @@
+# Project Portfolio
+
+Scanned <N> project(s) under `<target_dir>`.
+Regenerate with the `project-portfolio-review` skill; edit individual
+`PROJECT_STATE.md` files directly, they are the source of truth.
+
+| Project | Verdict | Stale (days) | Uncommitted changes | Deploy signals | Market researched |
+|---|---|---|---|---|---|
+| [<name>](<name>/PROJECT_STATE.md) | <money\|fame\|neither\|unassessed> | <N> | <yes\|no> | <yes\|no> | <yes\|no> |
+
+<!--
+This file is produced by scripts/render_portfolio.py, which parses the YAML
+frontmatter of every PROJECT_STATE.md under the target directory and sorts
+rows: money > fame > neither/unassessed, then by staleness ascending
+(freshest first) within each group. It is a plain aggregation with no
+judgment involved — do not hand-edit; rerun the skill instead.
+-->

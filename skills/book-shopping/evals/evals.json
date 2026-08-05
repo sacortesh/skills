@@ -1,0 +1,43 @@
+{
+  "skill_name": "book-shopping",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "where can i find a copy of Deep Work by Cal Newport? want to buy it but also grab the epub to add to my RAG library",
+      "expected_output": "A grouped list of links for 'Deep Work' by Cal Newport: retailer/buy links (Amazon, Bookshop.org, AbeBooks), search links (Google, Google Books, Open Library, WorldCat), and an Anna's Archive link with a note about the avangarde-rag provisioning workflow (drop EPUB in inbox/, run process.py).",
+      "files": [],
+      "expectations": [
+        "Output includes an Amazon (or equivalent major retailer) search link for 'Deep Work'",
+        "Output includes a Bookshop.org or AbeBooks link (indie/used retailer)",
+        "Output includes an Anna's Archive (or equivalent EPUB source) link",
+        "Output explains or links the RAG provisioning next step (drop EPUB in avangarde-rag/inbox/, run process.py) since the user explicitly asked to add it to their RAG library",
+        "Output includes at least one general search link (Google, Google Books, Open Library, or WorldCat)",
+        "Links are grouped by intent (buy vs. search vs. provision), not a flat undifferentiated list"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "just ran /book-hunt on 'stoicism' and got this shopping list back:\n\n🔴 High: Letters from a Stoic — Seneca\n🟡 Medium: Discourses — Epictetus\n🟢 Low: Enchiridion — Epictetus\n\ncan you get me links for all of these so I can actually go buy/grab them?",
+      "expected_output": "Links for all three titles, each grouped into buy/search/provision sections, with author attached to each (Seneca, Epictetus, Epictetus). Should not skip any of the three books or merge them into one query.",
+      "files": [],
+      "expectations": [
+        "Output includes a distinct link block for all three titles: 'Letters from a Stoic', 'Discourses', and 'Enchiridion'",
+        "Each title's links are attributed to the correct author (Seneca for Letters from a Stoic; Epictetus for both Discourses and Enchiridion)",
+        "Titles are not merged into a single combined search query — each book gets its own set of links",
+        "Output includes a buy link (Amazon, Bookshop.org, or AbeBooks) for each of the three titles",
+        "Output includes an EPUB/archive provisioning link (e.g. Anna's Archive) for each of the three titles"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "i want to provision 'This Is Your Brain on Music' by Daniel Levitin for the avangarde-rag knowledge base, need the epub search link",
+      "expected_output": "At minimum an Anna's Archive search link for the title, plus (since the skill returns the full grouped set) buy/search links too. Should reference the provisioning steps (inbox/, process.py) since the user explicitly framed this as a RAG-provisioning task.",
+      "files": [],
+      "expectations": [
+        "Output includes an Anna's Archive (or equivalent EPUB source) search link for the title",
+        "Output states or links the provisioning next steps: drop EPUB in avangarde-rag/inbox/, run process.py",
+        "Output surfaces the EPUB/provisioning link prominently, since that was the explicit ask, not buried under unrelated content"
+      ]
+    }
+  ]
+}

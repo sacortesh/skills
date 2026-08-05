@@ -1,0 +1,108 @@
+---
+project: <name>
+last_scanned: <ISO date, e.g. 2026-07-29>
+tech_stack: <comma-separated, e.g. "TypeScript, Next.js, Postgres">
+staleness_days: <int>
+git_is_repo: <true|false>
+git_branch: <branch name or "none">
+uncommitted_changes: <true|false>
+unpushed_commits: <int or "n/a">
+has_remote: <true|false>
+has_planning_docs: <true|false>
+has_deploy_signals: <true|false>
+market_researched: <true|false>
+verdict: <money|fame|private|expand|merge|delete|neither>
+merge_with: <project name, or "n/a">
+usable_as_is: <true|false>
+effort: <low|medium|high>
+next_step: <one imperative line, e.g. "Build the NestJS API skeleton">
+---
+
+# <Project Name>
+
+## Purpose
+<What the project does, in 2-4 sentences, based on the file listing, README,
+and dependency manifest. Name the tech stack. If the purpose is unclear from
+what's present, say so plainly rather than guessing.>
+
+**Files present:** <short list or count + notable ones>
+
+## Git State
+<Repo or not; branch; clean or dirty working tree; unpushed commits; has a
+remote or is local-only. One or two sentences — the frontmatter already has
+the structured version, this is the narrative gloss.>
+
+## Staleness
+Last activity: <date> (<N> days ago).
+
+## Planning Artifacts
+<List any PRDs, task lists, roadmaps, spec-kit files found, or "None found.">
+
+## Deployment Signals
+<List any deploy config found (vercel.json, Dockerfile, CI workflows, etc.),
+or "None found — looks local-only.">
+
+## Market Position
+<Either "Not yet assessed" (default), or — once researched — a short summary
+of what similar tools/products exist, whether there's a real gap, and how
+crowded the space is. Cite what was searched.>
+
+## Usable As-Is
+<Separate from the verdict below: in its CURRENT state, right now, does
+this already provide real value to someone — often the user themselves —
+even if nothing more is ever built? A rough script that works is usable;
+a well-planned repo with no working code isn't, yet. This is about
+present value, not potential.>
+
+## Verdict
+<A short, honest, human-toned note on where this is headed:
+- **money** — marketable, a real gap, worth pursuing commercially.
+- **fame** — technically strong or interesting, good portfolio/CV
+  material, but not a business.
+- **private** — genuinely gives an edge (an advantage in trading,
+  scraping, a job search, a game, a market — something competitive), and
+  the edge depends on staying non-public. This is a confident, deliberate
+  call to keep it back, not a hedge — different from "neither," which is
+  "can't tell yet." Say what the edge is and why sharing it would blunt it.
+- **expand** — has a clear direction and real potential, but needs more
+  built before money or fame can be honestly judged. More hopeful than
+  "neither" — there's a path, it's just not walked yet.
+- **merge** — more valuable combined with another project in this same
+  portfolio than continued alone (name it in `merge_with` and explain
+  why — e.g. two half-built tools solving adjacent problems, or one
+  project's data feeding another's use case).
+- **delete** — an active recommendation to remove it, not just neglect
+  it. Use this when the technology is genuinely obsolete with no path
+  forward, when it was a pure tutorial/learning exercise with no lasting
+  value beyond having been practice, or when a repo is simply the wrong
+  medium for what it holds (e.g. a data dump or personal archive that
+  belongs in a proper store, not version control). Different from
+  "neither": neither is "can't tell yet, still open"; delete is a closed
+  case with an actual verdict.
+- **neither** — thin, unclear, or stalled without a visible path forward.
+  The honest "I can't yet tell, and there's no obvious next step" bucket.
+
+Say why in one or two sentences — this is the part a human skimming the
+portfolio actually reads. Don't hedge into "could be either"; pick the one
+that's true right now, given what's actually on disk.
+
+If a project genuinely doesn't fit any of these — not a bad-fit
+approximation, but a real gap in the categories above — pick the closest
+one anyway (so the row still sorts sensibly) and add a line starting
+"**Suggested new category:**" in the Verdict section explaining what's
+missing and why. The taxonomy above grew out of exactly this kind of
+feedback; don't force a bad fit silently.>
+
+## Next Step
+<One concrete, imperative sentence: the single next action that would
+actually move this project — not a wish list. "Build the NestJS API
+skeleton," "Resolve PLAN_A vs PLAN_B before writing more code," "Share it
+publicly — README and license are already in place," "Nothing needed,
+already shipped and in daily use." Pair it with an honest **effort**
+estimate for just that one step:
+- **low** — a focused sitting or two.
+- **medium** — a real chunk of a weekend.
+- **high** — multi-week, needs sustained attention.
+
+Effort is about the next step, not the whole remaining project — don't
+let a big eventual vision inflate the estimate for what's actually next.>
