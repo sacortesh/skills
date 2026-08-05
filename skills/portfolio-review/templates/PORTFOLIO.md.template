@@ -1,7 +1,7 @@
 # Project Portfolio
 
 Scanned <N> project(s) under `<target_dir>`.
-Regenerate with the `project-portfolio-review` skill; edit individual
+Regenerate with the `portfolio-review` skill; edit individual
 `PROJECT_STATE.md` files directly, they are the source of truth.
 
 | Project | Verdict | Stale (days) | Uncommitted changes | Deploy signals | Market researched |

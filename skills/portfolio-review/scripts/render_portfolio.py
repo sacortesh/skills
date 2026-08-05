@@ -122,7 +122,7 @@ def main():
         "# Project Portfolio",
         "",
         f"Scanned {len(rows)} project(s) under `{target_dir}`.",
-        "Regenerate with the `project-portfolio-review` skill; edit individual",
+        "Regenerate with the `portfolio-review` skill; edit individual",
         "`PROJECT_STATE.md` files directly, they are the source of truth.",
         "Sorted by priority: verdict (impact) first, effort for the next step",
         "as the tiebreaker — quick wins within a tier surface above slow ones.",

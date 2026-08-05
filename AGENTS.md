@@ -14,13 +14,10 @@ Pattern: `<searchable-noun>-<what-it-does>[-<variant>]`
   searches. The verb after it (shopping/hunt) distinguishes the two.
 - `learning-aspire` (renamed 2026-08-05, was `aspire-learning`) — leads with
   "learning" now; "ASPIRE" is the internal method name, kept as the suffix.
-
-**Needs fixing when next touched:**
-- `project-portfolio-review` → should lead with "portfolio" (what people
-  search), not "project." Splitting by scope (local vs. GitHub-repo mode)
-  was considered and rejected — `references/github-repos.md` already
-  handles that branch cleanly within one skill; a rename is still worth
-  doing, a split isn't.
+- `portfolio-review` (renamed 2026-08-05, was `project-portfolio-review`) —
+  leads with "portfolio" now. Splitting by scope (local vs. GitHub-repo
+  mode) was considered and rejected — `references/github-repos.md` already
+  handles that branch cleanly within one skill.
 
 ## When adding a new skill to this repo
 

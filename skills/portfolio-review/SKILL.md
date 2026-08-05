@@ -1,5 +1,5 @@
 ---
-name: project-portfolio-review
+name: portfolio-review
 description: Audits every project folder in a directory (and, on request, every GitHub repo for an account) and maintains a running assessment of each one's state — purpose, tech stack, git status, staleness, planning docs (PRDs/task lists/spec-kit), deployment readiness, and a verdict on whether it's closer to money (marketable, real gap), fame (portfolio/CV-worthy), private (a real edge worth keeping non-public), expand, merge, or neither yet. Writes a PROJECT_STATE.md per project plus a sorted PORTFOLIO.md rollup at the top. Use this whenever the user wants to review, audit, triage, or take stock of a folder full of side projects or repos — "what's the state of my projects", "which of these are worth finishing", "help me figure out what to work on", "portfolio review", "which of these could make money", "check my GitHub repos too, I bet I have stuff I forgot about", or anything about resurrecting old projects, deciding what to kill, or building a CV/portfolio from existing code. Also trigger for requests to just "update the project states" or "rescan" on a directory that already has PROJECT_STATE.md files from a prior run.
 ---
 
