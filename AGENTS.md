@@ -12,16 +12,15 @@ Pattern: `<searchable-noun>-<what-it-does>[-<variant>]`
 **Good, don't change:**
 - `book-shopping`, `book-hunt` — lead with "book," the word someone actually
   searches. The verb after it (shopping/hunt) distinguishes the two.
+- `learning-aspire` (renamed 2026-08-05, was `aspire-learning`) — leads with
+  "learning" now; "ASPIRE" is the internal method name, kept as the suffix.
 
 **Needs fixing when next touched:**
-- `aspire-learning` → should lead with "learning" (e.g. `learning-aspire`).
-  "ASPIRE" is the internal method name for the protocol, not what a stranger
-  searches for.
 - `project-portfolio-review` → should lead with "portfolio" (what people
-  search), not "project." Also consider splitting by scope once the local
-  and GitHub-repo modes diverge enough to be found independently —
-  `portfolio-review-local` / `portfolio-review-github` — rather than one
-  skill covering both behind an internal mode switch.
+  search), not "project." Splitting by scope (local vs. GitHub-repo mode)
+  was considered and rejected — `references/github-repos.md` already
+  handles that branch cleanly within one skill; a rename is still worth
+  doing, a split isn't.
 
 ## When adding a new skill to this repo
 

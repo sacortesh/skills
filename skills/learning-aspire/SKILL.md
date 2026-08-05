@@ -1,5 +1,5 @@
 ---
-name: aspire-learning
+name: learning-aspire
 description: Runs the ASPIRE self-learning protocol (Audit, Source, Probe, Ingest, Retrieve, Endure) for any skill or topic the user wants to learn — including coding skills. Use when the user invokes this skill directly, asks to start or resume a learning project, or references "the ASPIRE method" or "the download protocol."
 argument-hint: "topic slug to resume/start, or leave blank for a status dashboard"
 disable-model-invocation: true
