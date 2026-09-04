@@ -10,6 +10,22 @@ dense product UI, that skill's own scope note applies here too: reach for
 an official design system (see `references/06-styling.md`'s design-system
 map) instead of forcing landing-page taste rules onto it.
 
+## Known limitation: this catches statistical defaults, not model drift
+
+Every rule below targets *statistical* AI-defaults — combinations
+(cream+terracotta, near-black+acid-green, three identical cards) that show
+up regardless of who's prompting, because they're the most common path
+through training data. It has no way to catch a choice that passes every
+rule here but still reads as generated, because it pattern-matches to this
+specific model's own accumulated output rather than to a named default.
+That failure mode showed up in practice on a copper accent color that
+cleared every mechanical check here and still read as "obviously AI" to
+someone with enough exposure to this model's output. No checklist fixes
+this — the process fix is `references/03-themes.md`'s requirement to
+present 2-3 named candidates and get a human pick before committing to one,
+especially before building anything expensive around it. Treat this file as
+necessary, not sufficient.
+
 ## Fetch the live standard first
 
 Before reviewing, fetch the current rules with WebFetch:

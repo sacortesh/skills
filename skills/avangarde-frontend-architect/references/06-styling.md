@@ -19,6 +19,7 @@ package — don't hand-roll what's already solved and accessibility-audited:
 | Public-sector (UK / US) | `govuk-frontend` / `uswds` | Often regulatorily expected |
 | Modern accessible React foundation, own the styling | `@radix-ui/themes` | Primitives + polished theme |
 | Modern SaaS, want to own the component code | shadcn/ui | You own it, customize freely — never ship in default state |
+| **Solo/small-team product with its own bespoke identity — not a marketing/landing page, not enterprise B2B** | shadcn/ui or bare `@radix-ui/react-*` primitives + Phase 3's tokens | Unopinionated enough to carry a bespoke identity without fighting a system's visual language, while still getting accessible primitives for free. This is the common case that's neither of the two extremes above — name it explicitly here rather than reaching it by process of elimination. |
 
 If one of these fits, install and use the **official** package rather than
 recreating its CSS by hand, and don't import a system's tokens only to
@@ -27,6 +28,15 @@ Fluent and Carbon, or shadcn and Material, in the same tree. Only fall
 through to the Tailwind-vs-CSS decision below when the brief is a bespoke
 aesthetic direction with no owning system, or explicitly wants hand-rolled
 styling.
+
+**Note for the bespoke-product row above**: `references/taste-checklist.md`'s
+mechanical rules (hero word counts, eyebrow caps, marquee limits, bento
+cell counts) target marketing/landing surfaces specifically. A product app
+that lands in this row still uses Phase 3's OKLCH/token process and the
+taste checklist's consistency locks (color/shape/theme) and AI-tell list,
+but its landing-page-specific mechanical checks mostly don't apply to a
+dashboard-like or tool-like screen — use judgment on which sections of that
+checklist actually fit the surface at hand.
 
 ## Decision inputs
 

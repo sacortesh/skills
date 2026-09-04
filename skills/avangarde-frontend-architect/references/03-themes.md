@@ -17,9 +17,26 @@ brief would not.
 
 ## Color: decide in OKLCH, commit as hex
 
-Lock the brand anchor color before anything else in this phase — background,
-surface, text, and accent all derive from it, so getting it right first
-avoids re-deriving the rest of the palette later.
+The brand anchor color drives everything else in this phase — background,
+surface, text, and accent all derive from it — so it's worth getting right
+before anything else, and "right" here specifically means **user-confirmed,
+not self-confirmed**.
+
+**Present 2-3 named candidates before committing to one — never pick
+silently and build around it.** This is not optional even when a candidate
+seems obviously correct. `references/taste-checklist.md`'s mechanical
+checks catch *statistical* AI-defaults — the cream+terracotta or
+near-black+acid-green combinations that show up regardless of who's
+prompting. They have no way to catch a color that passes every mechanical
+rule but still reads as generated, because it pattern-matches to this
+model's own accumulated output specifically rather than to a named,
+checklist-encoded default. That failure mode is only catchable by a human
+comparing named options side by side — not by a better rule, and not by a
+more careful self-review. Name each candidate (e.g. "Slate Cobalt," "Warm
+Graphite," "Deep Teal"), give each a one-line character note, and get an
+explicit pick before deriving the rest of the palette or building anything
+around it — especially before building a flagship/hero screen, where the
+cost of an unconfirmed miss compounds fastest.
 
 - **Why OKLCH, not HSL/RGB**: OKLCH's lightness axis is perceptually
   uniform — two colors at the same `L` actually look equally light, and
@@ -33,21 +50,32 @@ avoids re-deriving the rest of the palette later.
   separating hue while holding `L`/`C` comparable so the distinction reads
   as intentional.
 - **Process**:
-  1. Define the brand anchor (usually `--color-primary`) as `oklch(L C H)`
-     first — the one color the Phase 1 subject and mood should drive most
-     directly.
-  2. Derive the rest from it in OKLCH: background/surface by shifting `L`
-     (holding `H`, dropping `C` toward zero for near-neutral surfaces),
-     text by pushing `L` to the opposite end until the contrast math clears
-     WCAG AA against its background, accent by rotating `H` (or picking a
-     second anchor) while keeping `L`/`C` in a comparable range.
+  1. Propose 2-3 named anchor-color candidates as `oklch(L C H)`, per the
+     presentation requirement above, and get an explicit pick before
+     continuing.
+  2. Derive the rest from the chosen anchor in OKLCH: background/surface by
+     shifting `L` (holding `H`, dropping `C` toward zero for near-neutral
+     surfaces), text by pushing `L` to the opposite end until the contrast
+     math clears WCAG AA against its background, accent by rotating `H`
+     (or picking a second anchor) while keeping `L`/`C` in a comparable
+     range.
   3. **Convert every OKLCH value to hex deterministically — compute it,
-     don't eyeball it.** Run an actual OKLCH→sRGB conversion (e.g. Node
-     with `culori`'s `formatHex(oklch(...))`, or Python with `coloraide`)
-     so the same OKLCH input always produces the exact same hex. If no
-     conversion tool is available in the environment, say so explicitly
-     rather than emitting an approximated hex — an eyeballed conversion
-     defeats the point of choosing colors in a deterministic space.
+     don't eyeball it, and don't reconstruct the conversion from memory as
+     a substitute for actually running it.** In order:
+     a. Install a real conversion library on the spot and use it — `npm
+        install culori` (or a one-off `npx`-based script) or `pip install
+        coloraide` — this is the default path and works in any environment
+        with network/package-manager access. Prefer a conversion tool
+        already present in the project if one exists.
+     b. If installation genuinely isn't possible (no network, sandboxed,
+        no package manager), **say so explicitly to the user and label the
+        resulting hex values as unverified.** Do not hand-transcribe the
+        OKLab/OKLCH conversion matrices from memory into a throwaway
+        script and present the output as computed — a transcription error
+        is invisible and looks exactly as plausible as a correct
+        conversion. That silent-failure risk is precisely what "compute
+        it, don't eyeball it" exists to prevent; reconstructing the math
+        from memory reintroduces the same risk with extra steps, not less.
   4. Record both forms in the output: OKLCH as the design intent (what to
      tweak if a color needs to change), hex as the committed token value
      everything downstream — Tailwind config, CSS custom properties,
@@ -59,13 +87,13 @@ avoids re-deriving the rest of the palette later.
 
 **Pass 1 — plan.** Before writing any CSS, produce a compact token plan:
 
-- **Color**: 4-6 named colors forming the core palette, decided per the
-  OKLCH-first process above and committed as hex — not a default
-  terracotta/cream or near-black/acid-green scheme unless the brief
-  actually calls for that mood. Premium-consumer briefs (cookware,
-  wellness, artisan, luxury) pull toward a specific banned default — warm
-  beige/cream + brass/clay/oxblood/ochre + espresso text — hard enough
-  that it's worth naming and deliberately avoiding; see
+- **Color**: 4-6 named colors forming the core palette, derived from the
+  user-confirmed anchor per the OKLCH-first process above and committed as
+  hex — not a default terracotta/cream or near-black/acid-green scheme
+  unless the brief actually calls for that mood. Premium-consumer briefs
+  (cookware, wellness, artisan, luxury) pull toward a specific banned
+  default — warm beige/cream + brass/clay/oxblood/ochre + espresso text —
+  hard enough that it's worth naming and deliberately avoiding; see
   `references/taste-checklist.md` for the exact hex families and rotation
   alternatives.
 - **Type**: one or two typeface families and their roles (display vs. body).
