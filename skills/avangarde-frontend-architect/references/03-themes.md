@@ -15,6 +15,40 @@ table. Every choice below should trace back to these values: a `variance:
 9` brief justifies an asymmetric, rule-breaking layout that a `variance: 4`
 brief would not.
 
+**Read `DESIGN.md`'s Primary Rendering Surface (Phase 1) before setting
+MOTION_INTENSITY and VISUAL_DENSITY** — it caps both, independent of what
+the aesthetic mood alone would suggest:
+
+- Mobile-first: MOTION_INTENSITY has a real battery/perf ceiling regardless
+  of mood — an "Awwwards/experimental" brief still can't spend a 9 here the
+  way the same brief could on desktop. VISUAL_DENSITY also has a practical
+  ceiling from screen size.
+- Desktop-first (tools, dashboards, dense B2B): VISUAL_DENSITY can run
+  higher than the brief-signal table's defaults suggest, since there's
+  physical room and the audience expects information density.
+- Kiosk/TV: MOTION_INTENSITY depends entirely on context — an ambient
+  display wants near-zero incidental motion; an attract-loop screen may
+  want to max it out. State which case this is; don't assume.
+- Touch-primary surfaces (mobile, kiosk, tablet) can't rely on hover for
+  anything load-bearing — any interaction planned around a hover state
+  needs a touch-equivalent named now, not discovered during Phase 4.
+
+## Breakpoint strategy
+
+Decide this from Primary Rendering Surface, not by habit:
+
+- **Mobile-first** (design and test the primary rendering surface's base
+  styles first, then progressively enhance upward with `min-width` media
+  queries) when the named primary surface is mobile or touch-first.
+- **Desktop-first** (base styles target the desktop layout, then adapt
+  downward) when the named primary surface is desktop — common for
+  internal tools and dense dashboards where the mobile view is a secondary
+  concession, not the main experience.
+- State which one this brief uses in the token output below — Phase 6
+  implements the actual breakpoint values, but which direction is
+  "designed first" is a Phase 3 decision, because it changes which layout
+  gets the most design attention.
+
 ## Color: decide in OKLCH, commit as hex
 
 The brand anchor color drives everything else in this phase — background,
@@ -96,14 +130,21 @@ cost of an unconfirmed miss compounds fastest.
   hard enough that it's worth naming and deliberately avoiding; see
   `references/taste-checklist.md` for the exact hex families and rotation
   alternatives.
-- **Type**: one or two typeface families and their roles (display vs. body).
-  Two families should be clearly distinct from each other, not
-  near-duplicates. Set a type scale with intentional weights and spacing —
-  don't reach for Inter/Roboto/Arial/Space Grotesk by default. Serif is
-  justified only when the brief names one or the aesthetic is genuinely
-  editorial/luxury/heritage — reaching for serif because "it feels premium"
-  is itself a tell (`references/taste-checklist.md`); `Fraunces` and
-  `Instrument_Serif` are banned as defaults outright.
+- **Type**: same candidate-presentation requirement as color — **propose
+  2-3 named type-pairing candidates and get an explicit user pick before
+  locking one in**, for the same reason: avoiding the specific named tells
+  (Inter/Roboto/Arial/Space Grotesk as defaults; Fraunces/Instrument_Serif
+  as display serifs) filters out the *known* AI-defaults, but the next
+  font down the list of "safe alternatives" can just as easily become the
+  new tell once enough tools converge on recommending it — a banned-list
+  approach only ever chases the last generation of default, it doesn't
+  prevent the next one. A human picking between named, distinct-looking
+  candidates is what actually catches that; a longer ban list doesn't. Each
+  candidate: one or two families with clear display/body roles (or a
+  single family with distinct weights, if that's the direction), a
+  one-line character note, and a type scale with intentional weights and
+  spacing. Serif is justified only when the brief names one or the
+  aesthetic is genuinely editorial/luxury/heritage.
 - **Layout**: a one-sentence layout concept plus an ASCII wireframe;
   state the alignment approach (left, centered, justified) explicitly.
 - **Motion**: where the one deliberate moment of motion lives (a single
@@ -123,7 +164,10 @@ sections stay intact above it):
 
 ```markdown
 ## Theme
-Dials: variance [n], motion [n], density [n]
+Dials: variance [n], motion [n], density [n] (capped/set by: [primary
+rendering surface from DESIGN.md Requirements])
+Breakpoint strategy: [mobile-first / desktop-first], because [primary
+rendering surface]
 
 ### Color
 --color-bg: #______        (oklch(L C H))

@@ -18,11 +18,16 @@ up regardless of who's prompting, because they're the most common path
 through training data. It has no way to catch a choice that passes every
 rule here but still reads as generated, because it pattern-matches to this
 specific model's own accumulated output rather than to a named default.
-That failure mode showed up in practice on a copper accent color that
-cleared every mechanical check here and still read as "obviously AI" to
-someone with enough exposure to this model's output. No checklist fixes
-this — the process fix is `references/03-themes.md`'s requirement to
-present 2-3 named candidates and get a human pick before committing to one,
+That failure mode showed up in practice twice: once on a copper accent
+color, once on a typeface choice — both cleared every mechanical check
+here and still read as "obviously AI" to someone with enough exposure to
+this model's output. A named ban list doesn't prevent this either: banning
+Inter/Fraunces/etc. just pushes the default to whatever's next on the list
+of "safe alternatives," which then becomes the new tell once enough tools
+converge on recommending it — the list is always one generation behind. No
+checklist or ban list fixes this — the process fix is
+`references/03-themes.md`'s requirement to present 2-3 named candidates
+(for both color and type) and get a human pick before committing to one,
 especially before building anything expensive around it. Treat this file as
 necessary, not sufficient.
 
