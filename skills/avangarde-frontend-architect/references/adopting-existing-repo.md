@@ -10,16 +10,28 @@ Adapted from Leonxlnx/taste-skill's Redesign Protocol (MIT).
 
 ## 1. Detect the mode first
 
+Every mode below is really one of two moves, and mixing them is the failure
+mode to watch for: **refinement preserves** — it keeps the incumbent
+identity, behavior, copy, and everything outside scope, changing only what
+was actually asked about. **Redesign replaces** — it keeps product truth,
+content, and real constraints, but treats the old visual language as
+evidence and anti-reference, not as something to split the difference with.
+A redesign that quietly keeps polishing the discarded look instead of
+committing to the new one is the tell that refinement and redesign got mixed
+mid-task — pick one before starting, not partway through.
+
 Ask, or infer from the request, which of these is actually true:
 
 - **Adopt as-is** — no redesign intent; the user wants to understand,
   extend, or take ownership of what exists. Audit only, no changes.
-- **Evolve — preserve** — modernize without breaking the brand or IA. Audit
-  first, extract what's already there, change gradually.
-- **Overhaul** — new visual language on top of existing content and
-  structure. Treat phases 3/4/6 as greenfield; preserve content and IA
-  (phases 1/2) as constraints, not starting points to redo.
-- **Rebuild** — the brand itself is changing, or the codebase is
+- **Evolve — preserve** (refinement) — modernize without breaking the brand
+  or IA. Audit first, extract what's already there, change gradually.
+- **Overhaul** (redesign) — new visual language on top of existing content
+  and structure. Treat phases 3/4/6 as greenfield; preserve content and IA
+  (phases 1/2) as constraints, not starting points to redo. The old visual
+  language is reference for what to avoid repeating, not a baseline to
+  soften toward.
+- **Rebuild** (redesign) — the brand itself is changing, or the codebase is
   unsalvageable. Run the full phases 1-7 pipeline from `SKILL.md` instead
   of this file; the existing repo is reference material, not a foundation.
 

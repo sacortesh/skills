@@ -42,16 +42,30 @@ Ask what the brief doesn't already answer — don't invent these silently:
    dedicated screen doesn't). Don't default to "responsive, works
    everywhere" without naming which surface is actually primary — treating
    every surface as equally primary is how none of them end up well-suited.
-6. **Constraints.** Framework preference (defaults to React — see Phase 5),
+6. **Visitor mode.** What does success look like for the person on this
+   surface — do they decide and act (**Persuade**: landing pages, marketing,
+   pricing — expression and attention outrank restraint), complete a task
+   (**Operate**: app UI, dashboards, editors, settings — scanability and
+   consistency outrank expression), understand something (**Read**: docs,
+   articles, changelogs — structure for comprehension first), or inhabit the
+   work itself (**Experience**: portfolios, galleries, showcases — the
+   interface recedes behind the artifact)? Choose this from the surface being
+   built, not the product as a whole — a tool's own landing page is still
+   Persuade even though the tool itself is Operate, and a fashion house's
+   documentation is still Read. This isn't a formality: it's the tie-breaker
+   Phase 3 reaches for when a theme choice could go either bold or restrained,
+   and the one Phase 4 uses to decide whether a component earns visual
+   personality or has to disappear into consistency.
+7. **Constraints.** Framework preference (defaults to React — see Phase 5),
    styling preference if already known (Tailwind vs. CSS — Phase 6 still
    makes the final call), performance/accessibility requirements, existing
    brand or design-system constraints.
-7. **Behavioral requirements, if relevant.** If the product needs to build a
+8. **Behavioral requirements, if relevant.** If the product needs to build a
    habit or change behavior (subscription products, health apps, learning
    tools), name the target behavior explicitly and check it against
    *Hooked* and *Designing for Behavior Change* — this becomes a Phase 7
    journey scenario later.
-8. **Irreducible complexity (Tesler's Law).** What complexity does this
+9. **Irreducible complexity (Tesler's Law).** What complexity does this
    domain inherently have, and who should absorb it — the system, or the
    user? Decide this now; it shapes navigation (Phase 2) and component
    design (Phase 4) later.
@@ -68,6 +82,7 @@ it doesn't exist yet — this is the first phase to write to it):
 ### Primary job-to-be-done
 ### Content inventory
 ### Primary rendering surface
+### Visitor mode (Persuade / Operate / Read / Experience)
 ### Constraints (framework, styling, a11y, perf, brand)
 ### Behavioral requirements (if any)
 ### Complexity ownership (system vs. user)

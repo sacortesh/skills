@@ -1,6 +1,6 @@
 ---
 name: avangarde-frontend-architect
-description: Master flow for architecting a website or app's frontend from zero — requirements, information architecture, theming, component inventory, framework-specific structure (React first, extensible), a Tailwind-vs-CSS styling decision with maintainability practices, and a closing Gherkin/BDD journey report for external testing and handoff. Self-contained — no external knowledge base or MCP server required. Routes each request to the one phase(s) that apply instead of forcing a rigid pipeline. Every phase is grounded in established UI/UX methodology (About Face's goal-directed design, Atomic Design's component hierarchy, The Design of Everyday Things' affordances, Design for Hackers' visual grammar, The Image of the City's wayfinding, Hooked's habit loops), a 20-law UX checklist (Hick's, Fitts's, Jakob's, Miller's, etc.), and a tunable design-variance/motion-intensity/visual-density taste system, all gated against a mechanical anti-"AI slop" pre-flight checklist before anything is called done. Decisions are persisted to DESIGN.md/ARCHITECTURE.md/journeys/ as each phase completes, with an explicit checkpoint-and-resume protocol so a long build survives context compaction or a fresh session without losing prior decisions. Also handles the inherited-codebase case — auditing, critiquing, or modernizing a frontend this skill didn't build, via a preserve-vs-overhaul-vs-rebuild triage instead of blindly regenerating it. Use this whenever the user wants to design or scaffold a new app/website's frontend from scratch, define its navigation/IA, pick a visual theme or design tokens, plan its component library, architect its React (or other framework) structure, decide between Tailwind and plain CSS, produce a BDD-style journey report for QA/handoff, or review/modernize/take ownership of an existing frontend codebase. Also trigger for narrower asks that clearly map to one phase — "help me pick a theme," "what components do I need," "should this be Tailwind or CSS," "write Gherkin scenarios for this flow," "review my UI for AI slop," "audit this repo before I touch it" — without requiring the full pipeline.
+description: Master flow for architecting a website or app's frontend from zero — requirements, information architecture, theming, component inventory, framework-specific structure (React first, extensible), a Tailwind-vs-CSS styling decision with maintainability practices, and a closing Gherkin/BDD journey report for external testing and handoff. Self-contained — no external knowledge base or MCP server required. Routes each request to the one phase(s) that apply instead of forcing a rigid pipeline. Every phase is grounded in established UI/UX methodology (About Face's goal-directed design, Atomic Design's component hierarchy, The Design of Everyday Things' affordances, Design for Hackers' visual grammar, The Image of the City's wayfinding, Hooked's habit loops), a 20-law UX checklist (Hick's, Fitts's, Jakob's, Miller's, etc.), and a tunable design-variance/motion-intensity/visual-density taste system, all gated against a mechanical anti-"AI slop" pre-flight checklist before anything is called done. Decisions are persisted to DESIGN.md/ARCHITECTURE.md/journeys/ as each phase completes, with an explicit checkpoint-and-resume protocol so a long build survives context compaction or a fresh session without losing prior decisions. Also handles the inherited-codebase case — auditing, critiquing, or modernizing a frontend this skill didn't build, via a preserve-vs-overhaul-vs-rebuild triage instead of blindly regenerating it. Also sanity-checks a frontend plan someone else already assembled — spec-kit's spec/plan/tasks output, or any Spec-Driven Development task breakdown — against this skill's own seven-phase checklist *before* anyone writes code against it, catching missing IA/theme/accessibility/acceptance-criteria coverage and bad task sequencing. Use this whenever the user wants to design or scaffold a new app/website's frontend from scratch, define its navigation/IA, pick a visual theme or design tokens, plan its component library, architect its React (or other framework) structure, decide between Tailwind and plain CSS, produce a BDD-style journey report for QA/handoff, review/modernize/take ownership of an existing frontend codebase, or sanity-check a spec-kit/SDD plan or task list before implementation starts. Also trigger for narrower asks that clearly map to one phase — "help me pick a theme," "what components do I need," "should this be Tailwind or CSS," "write Gherkin scenarios for this flow," "review my UI for AI slop," "audit this repo before I touch it," "did spec-kit plan this feature correctly," "sanity check these tasks before I start building" — without requiring the full pipeline.
 ---
 
 # Avangarde Frontend Architect
@@ -129,6 +129,16 @@ One more reference is an alternate entry point, not a phase:
   audits each phase's current state before proposing changes, and names
   what must never change without explicit approval (URLs, nav labels, form
   field names, brand logo, legal copy).
+- `references/plan-audit.md` — use this **instead of** running phases 1-7
+  fresh whenever the request is to sanity-check a plan someone else already
+  assembled (spec-kit's spec/plan/tasks output, or any Spec-Driven
+  Development task breakdown) *before* code gets written against it. Checks
+  the plan's task list for phase coverage (did anyone actually decide IA,
+  theme, accessibility, acceptance criteria — or just assume it) and
+  sequencing (is a task scheduled before the decision it depends on),
+  reporting Ready to build / Needs revision / Too incomplete to assess. This
+  audits the plan artifact itself — it is not a comprehension check on a
+  person, which is a different tool's job entirely.
 
 Two more references support every phase rather than owning one:
 
@@ -150,6 +160,10 @@ Two more references support every phase rather than owning one:
 0. **Building on top of a codebase this skill didn't create?** Stop here and
    read `references/adopting-existing-repo.md` instead of starting phase 1
    — auditing what already exists comes before deciding what changes.
+   **Sanity-checking a plan before any code exists yet** (spec-kit, SDD, or
+   any pre-written task breakdown)? Read `references/plan-audit.md` instead
+   — same "audit before acting" instinct, one phase earlier in the
+   lifecycle.
 1. **Identify which phase(s) the request maps to.** A "build me a new app"
    request runs all seven in order, each phase's output feeding the next. A
    narrower request ("what should the nav look like," "pick a theme," "is
@@ -160,7 +174,13 @@ Two more references support every phase rather than owning one:
    requirement, not decoration.
 3. **For phases 3, 4, and 6**, run the output against
    `references/taste-checklist.md` before presenting it. If something fails,
-   fix it before showing the user, not after.
+   fix it before showing the user, not after. Verify in one bounded pass, not
+   an open-ended loop: build the phase fully, inspect once against the
+   checklist, fix everything it flags in one batch, and confirm with at most
+   one more round. Open-ended self-QA after that point burns turns doing
+   worse what the user's own review of the presented output does better —
+   the checklist's job is to catch defects before presenting, not to chase
+   diminishing improvements after.
 4. **Write the phase's decisions to `DESIGN.md` or `ARCHITECTURE.md`**
    (see above) before moving on, and say so in one line per the
    checkpointing note above — rather than carrying decisions only in
@@ -194,4 +214,10 @@ are adapted from [Leonxlnx/taste-skill](https://github.com/Leonxlnx/taste-skill)
 landing pages, portfolios, and marketing sites, not dashboards or dense
 product UI, which is why `references/06-styling.md` routes those toward an
 official design system instead. UX laws sourced from the user's own note,
-itself summarizing a @adam_ha_yes reel.
+itself summarizing a @adam_ha_yes reel. The visitor-mode taxonomy (Phase 1),
+the refinement-preserves/redesign-replaces framing and "evidence and
+anti-reference" phrasing (`references/adopting-existing-repo.md`), and the
+bounded-pass verification principle (`SKILL.md` step 3) are adapted from
+the commercial `impeccable` skill — no open-source license is claimed for
+these; the concepts and phrasing are paraphrased from observed usage, not
+copied from its source files verbatim.
