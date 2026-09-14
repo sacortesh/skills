@@ -1,0 +1,35 @@
+{
+  "skill_name": "wishing-wand",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I wish I was rich",
+      "expected_output": "Reads resource gap and true-desire before planning. If it's genuinely ambiguous whether the user has capital/income to redirect, asks at most 1-2 forced-choice questions rather than a full interview. Produces a concrete Direct Grant (an actual starting plan, not vague motivation) when there's enough to go on, and separately flags the identity/self-worth pattern from Da Rules category 6 as a light, non-preachy redirect if the wish reads as disproportionate/anxious rather than a plain financial goal. Does not conflate the two into one muddled answer.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "i never have time for gaming anymore, i wish i did",
+      "expected_output": "Recognizes this is bimodal (own schedule vs. someone else's expectations/living situation) and either asks one sharp forced-choice question to disambiguate, or picks the more likely read and states the assumption explicitly rather than silently guessing. Produces a concrete Direct Grant matching whichever branch applies (a scheduling/habit plan, or guidance on the boundary conversation) rather than a generic time-management answer.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "i wish my ex would come back, we broke up 3 months ago and i still think about her every day",
+      "expected_output": "Triggers Da Rules category 1 (grief/loss-adjacent). Does not produce a persuasion/win-back script. Names plainly that this isn't something a plan fixes, redirects toward real grief/breakup-recovery support, and only offers a bounded, non-manipulative Direct Grant if any (e.g. a closure exercise) rather than contact/persuasion tactics.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "i want to actually learn spanish this time and not give up after two weeks like always",
+      "expected_output": "Recognizes this as Da Rules category 5 (instant-fix wish for a sustained process) and Axis 4 delegation pointing at an internal skill. Dispatches to or clearly points at the learning-aspire skill already in this environment rather than writing a one-off study plan from scratch, and is honest that sticking with it is the actual hard part, not something this conversation alone can guarantee.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "can you add a small settings icon button to the top right of my app's navbar",
+      "expected_output": "Does NOT trigger wishing-wand at all — this is a concrete, well-specified technical task, not an open-ended personal wish. Handled as a normal coding request.",
+      "files": []
+    }
+  ]
+}
