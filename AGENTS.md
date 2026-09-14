@@ -29,3 +29,34 @@ Pattern: `<searchable-noun>-<what-it-does>[-<variant>]`
    (a runtime, a CLI, an API key) — state it up front, don't bury it in
    usage instructions further down.
 4. Update the table in `README.md`.
+
+## Deploying local edits
+
+**This repo is the only place a skill's source ever gets edited — no
+exceptions, including when the editing is done through `skill-creator`
+or any other tool.** Edit here first, then push out with:
+
+```bash
+npx skills add . -g -s <skill-name> -y   # one skill
+npx skills add . -g --all                # everything
+```
+
+Never hand-edit a deployed copy under `~/.agents/skills/` or
+`~/.claude/skills/` directly — some of those are symlinks back into this
+repo and some are plain copies the CLI overwrites per-agent (not every
+agent supports symlinking), so an edit made there is invisible to git
+and gets silently clobbered by the next `add`. Treat everything outside
+this repo as build output.
+
+**`skill-creator` specifically is a trap here.** It's a generic tool
+with no awareness of this repo's convention, and when asked to "edit
+skill X" it will happily resolve and write to whatever copy it finds
+first — typically a deployed one under `~/.claude/skills/` or
+`~/.agents/skills/`, since that's what's actually loaded and discoverable
+in a live session, not the repo path. This already happened once: an
+`instruction-doctor` edit session landed entirely in
+`~/.agents/skills/instruction-doctor` (reached via a symlink from
+`~/.claude/skills/`) and the repo copy went stale until caught later by
+hand. Before invoking `skill-creator` (or pointing any other editing
+tool) at a skill that lives in this repo, explicitly pass it the path
+under `skills/<name>/` — never let it resolve the name on its own.

@@ -118,6 +118,27 @@ succeed. Auditing a file for "right altitude" means asking which terrain
 each instruction actually describes, not applying one house style
 everywhere in the same file.
 
+Freedom level has a formatting corollary, not just a content one.
+Anthropic's own prompting guidance says to write instructions "as
+sequential steps using numbered lists or bullet points when the order or
+completeness of steps matters" — which is exactly the low-freedom,
+must-happen-in-order case above. A paragraph that buries several
+distinct conditions or ordered steps in flowing prose is a format/content
+mismatch worth flagging, the same way a brittle enumerated if/else would
+be flagged in the other direction. This isn't a blanket "bullets beat
+prose" rule: high-freedom rationale and exposition are still better as
+prose, and the effect is strongest for small models parsing multi-step
+prompts (an arXiv study on small-model agents found bullet conversion
+"significantly improves instruction-following" there) — frontier models
+like Claude handle dense, well-written prose without losing track of
+individual requirements nearly as often. Judge each paragraph against
+the freedom level of what it's actually saying, don't convert a file to
+bullets wholesale. `lint_structure.py`'s "procedural paragraphs" check
+flags long, many-sentence paragraphs as candidates for this judgment
+call — it's a rough proxy (sentence count, not semantic understanding of
+whether order actually matters), so treat its hits as worth a look, not
+an automatic fix.
+
 ## Managing context over a long audit
 
 Anthropic's article also covers strategies for keeping an agent coherent

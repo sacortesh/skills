@@ -23,6 +23,14 @@ Checks:
     failure)
   - duplicate and near-duplicate paragraphs — the "nothing appears twice"
     pruning check
+  - procedural paragraphs — long paragraphs (>=70 words) that pack >=4
+    sentences into one block, a proxy for several distinct points bundled
+    together instead of separated into a list. Advisory only: Anthropic's
+    own prompting guidance says to use numbered/bulleted steps "when the
+    order or completeness of steps matters," but plenty of long
+    paragraphs are flowing rationale/exposition where prose is correct
+    (see references/levers.md's degrees-of-freedom section) — this flags
+    candidates for a human to judge, it does not fail them
   - leftover placeholders (TODO, FIXME, TBD, lorem ipsum, <placeholder>)
   - table-of-contents presence for files over 100 lines (Claude may only
     partially read long files, per the platform docs)
@@ -201,6 +209,35 @@ def find_duplicate_paragraphs(text: str, near_dup_threshold: float):
     return {"exact_duplicates": exact, "near_duplicates": near, "paragraph_count": len(paragraphs)}
 
 
+# A paragraph that crams several independent sentences/clauses into one
+# block is a candidate for a list, regardless of whether it uses narrative
+# transition words ("first," "then") — those turned out to be a weak
+# signal (see the sentence this replaced: it missed both paragraphs that
+# motivated this check). Sentence count is a rougher but more reliable
+# proxy for "several distinct points bundled together." Paragraphs that
+# already contain a markdown list, or the frontmatter block, are skipped
+# — they're either already a list or not prose to begin with.
+SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z*\"“])")
+LIST_MARKER_RE = re.compile(r"^\s*(?:[-*]|\d+\.)\s", re.MULTILINE)
+PROCEDURAL_MIN_WORDS = 70
+PROCEDURAL_MIN_SENTENCES = 4
+
+
+def find_procedural_paragraphs(text: str):
+    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if len(p.strip()) > 40]
+    hits = []
+    for i, p in enumerate(paragraphs):
+        if p.startswith("---") or LIST_MARKER_RE.search(p):
+            continue
+        word_count = len(p.split())
+        if word_count < PROCEDURAL_MIN_WORDS:
+            continue
+        sentence_count = len(SENTENCE_SPLIT_RE.split(p))
+        if sentence_count >= PROCEDURAL_MIN_SENTENCES:
+            hits.append({"index": i, "word_count": word_count, "sentence_count": sentence_count, "text": p[:120]})
+    return hits
+
+
 def heading_outline(text: str):
     return [{"level": len(m.group(1)), "text": m.group(2).strip()} for m in HEADING_RE.finditer(text)]
 
@@ -216,6 +253,7 @@ def analyze(path: Path, near_dup_threshold: float):
         "shout_words": shout_word_density(text),
         "placeholders": find_placeholders(text),
         "duplicates": find_duplicate_paragraphs(text, near_dup_threshold),
+        "procedural_paragraphs": find_procedural_paragraphs(text),
         "toc": check_toc(text, lines),
         "internal_md_links": find_internal_md_links(text),
         "headings": heading_outline(text),
@@ -275,6 +313,12 @@ def main():
             print(f"    - paragraphs {d['index_a']} & {d['index_b']} (similarity {d['similarity']}): \"{d['text_a']}...\"")
     if not dup["exact_duplicates"] and not dup["near_duplicates"]:
         print("  no duplicate/near-duplicate paragraphs found")
+
+    proc = result["procedural_paragraphs"]
+    if proc:
+        print(f"\nprocedural paragraphs (candidates for bulleting, see rubric.md dimension 2): {len(proc)}")
+        for h in proc[:5]:
+            print(f"  - paragraph {h['index']} ({h['word_count']} words, {h['sentence_count']} sentences): \"{h['text']}...\"")
 
     toc = result["toc"]
     if toc["required"]:

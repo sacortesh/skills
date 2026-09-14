@@ -10,6 +10,7 @@ this file says so plainly rather than quietly patching it over.
 ## Contents
 - Round 1: initial build
 - Round 2: post-build research pass (corrects round 1)
+- Round 3: bullets vs. prose for instructions (adds the formatting corollary)
 - What still hasn't been checked
 
 ## Round 1: initial build
@@ -85,6 +86,43 @@ above); Perplexity was not — `WebSearch` found the exact canonical pages
 on the first or second query each time, so spending Perplexity's more
 limited quota wasn't warranted. That's a judgment call each time, not a
 standing rule to skip Perplexity.
+
+## Round 3: bullets vs. prose for instructions (adds the formatting corollary)
+
+Triggered by a real audit finding (dense multi-clause paragraphs flagged
+in `code-ownership`'s `SKILL.md`) and the user asking whether bullets are
+actually better than prose for agent instructions, then asking to encode
+the answer into the rubric rather than treat it as a one-off judgment
+call.
+
+- **platform.claude.com — "Prompting best practices"**
+  https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices
+  Found via `WebSearch` + `WebFetch`, not RAG-indexed. Source of the
+  actual rule now in `levers.md`: "Provide instructions as sequential
+  steps using numbered lists or bullet points when the order or
+  completeness of steps matters." Also the source of the opposite,
+  easily-confused guidance — a documented preference for flowing prose
+  over bullets in Claude's own long-form *output* to end users (the
+  `avoid_excessive_markdown_and_bullet_points` sample block). These are
+  different axes (how to write instructions *to* Claude vs. how Claude
+  should format its response) and this skill's rubric only adopted the
+  first one.
+- **arXiv — "EffGen: Enabling Small Language Models as Capable
+  Autonomous Agents"** (2602.00887), found via `WebSearch`.
+  Found that converting paragraph instructions to bullets significantly
+  improves instruction-following, but specifically for *small* language
+  models — the mechanism given (bullets reduce the parsing burden of
+  tracking multiple requirements) is a small-model failure mode, not a
+  general one. This is why `levers.md` frames the formatting corollary
+  as freedom-level-dependent judgment, not a blanket rule: frontier
+  models like Claude don't reliably show the same failure mode on dense
+  prose.
+- **arXiv — "Beyond Prompt Content: Enhancing LLM Performance via
+  Content-Format Integrated Prompt Optimization"** (2502.04295), found
+  via `WebSearch`, abstract fetched via `WebFetch` (the full PDF didn't
+  extract cleanly). Establishes format as a real, jointly-optimizable
+  dimension alongside content — corroborating evidence that format isn't
+  neutral, though no effect size was recoverable from the abstract alone.
 
 ## What still hasn't been checked
 

@@ -68,7 +68,11 @@ file) can cap the whole score even if other dimensions are fine.
    operation earns low-freedom exact steps; a judgment call with several
    valid approaches earns high-freedom heuristics. A file scoring low
    here often has the freedom level backwards somewhere, not wrong
-   everywhere.
+   everywhere. This extends to formatting: a long paragraph cramming
+   several ordered steps or conditions into prose is a candidate for a
+   list (`lint_structure.py`'s "procedural paragraphs" check flags these
+   mechanically); see `levers.md`'s degrees-of-freedom section for why
+   this isn't a blanket bullets-over-prose rule.
 3. **Hierarchy & progressive disclosure** — is the always-loaded layer
    (frontmatter, or the whole file for a `CLAUDE.md`) thin, with
    conditional/domain-specific material pushed behind clear pointers?
