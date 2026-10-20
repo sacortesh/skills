@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "code-review-cheap finding set",
+  "description": "Output contract for the single AI review pass. validate_findings.py rejects anything that doesn't match this shape rather than letting it through as a silent clean review.",
+  "type": "object",
+  "required": ["findings", "questions"],
+  "additionalProperties": false,
+  "properties": {
+    "findings": {
+      "type": "array",
+      "maxItems": 5,
+      "items": { "$ref": "#/$defs/finding" }
+    },
+    "questions": {
+      "type": "array",
+      "description": "Uncertainties or missing evidence the reviewer noticed but couldn't resolve from the given context. Never a disguised finding.",
+      "items": { "type": "string" }
+    }
+  },
+  "$defs": {
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "severity", "category", "file", "line_start", "line_end", "side",
+        "title", "trigger", "consequence", "evidence", "remediation", "verification_status"
+      ],
+      "properties": {
+        "severity": { "enum": ["critical", "high", "medium", "low"] },
+        "category": { "type": "string", "description": "e.g. correctness, security, contract-mismatch, data-integrity, regression, missing-validation" },
+        "file": { "type": "string", "description": "Path exactly as it appears in the inspected diff — validate_findings.py checks this against the diff snapshot, not the live working tree." },
+        "line_start": { "type": "integer", "minimum": 1 },
+        "line_end": { "type": "integer", "minimum": 1 },
+        "side": { "enum": ["base", "head"] },
+        "title": { "type": "string", "maxLength": 120 },
+        "trigger": { "type": "string", "description": "Concrete triggering conditions — the input/state that provokes the failure." },
+        "consequence": { "type": "string", "description": "What actually goes wrong — crash, wrong output, data loss, security bypass." },
+        "evidence": { "type": "string", "description": "What in the diff/context connects the change to the failure. Not a restatement of the title." },
+        "remediation": { "type": "string", "description": "Direction, not a prescribed diff." },
+        "verification_status": {
+          "enum": ["model-hypothesis", "statically-supported", "reproduced-by-check"],
+          "description": "model-hypothesis: reviewer's read of the code only. statically-supported: corroborated by a deterministic check's output (lint/type/grep). reproduced-by-check: an executed test/check actually failed because of this."
+        }
+      }
+    }
+  }
+}
