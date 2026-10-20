@@ -80,7 +80,7 @@ Proceed to Source.
 
 ---
 
-## Phase: Source (once per topic, batch — runs for every unit on the map)
+## Phase: Source (first pass sources one batch; later batches run on resume)
 
 1. Using the audit, generate an ordered list of sub-skill units. Each unit gets: a short title, a kebab-case slug, and a tag of `theory` or `practice` (theory = understand something; practice = hands/voice/body reps needed). Keep units narrow — sized to be learnable in one sitting, not a whole book's worth.
 2. Write `~/aspire/<topic-slug>/map.md`:
@@ -99,13 +99,16 @@ Proceed to Source.
    1. **A custom/internal knowledge-base or RAG tool, if one exists** — check it first (list what's indexed, then query it). It may already hold vetted material specific to the user's context, at no query-quota cost.
    2. **Perplexity (or similar research MCP), if available** — for actual synthesis/research on the open web. Respect that tool's own quota rules (e.g. prefer its cheapest/quickest query mode; don't spend premium-model or deep-research calls on a simple resource lookup).
    3. **WebSearch** — use this when neither of the above exists, or when the lookup is objectively better served by a plain search (e.g. finding a specific official-docs URL needs no synthesis), or after the other tools turned up nothing relevant.
-4. For **each** unit, in order:
+4. Source only the next unsourced batch now — not the entire map. Default batch size: **1 unit** (the next `to-source` unit in map order), unless the user explicitly asks for more. Sourcing every unit upfront before any Probe/Ingest happens risks the "mountain of theory before momentum" trap — get the user into Probe/Ingest fast, then source more as they progress.
+
+   For each unit **in this batch**:
    - `mkdir -p ~/aspire/<topic-slug>/units/to-source/<unit-slug>/` and write `meta.md` (title, tag, order number).
+   - Calibrate resource difficulty to the **current level** stated in `audit.md`: total beginner / some exposure → prefer accessible "shallow media" entry points (intro articles, overview videos, wiki-level explainers) over dense technical material; rusty / experienced → can skip straight to denser or more technical sources.
    - Find one or two solid, specific resources for that unit — not the topic in general — using the priority order above.
    - Write `sources.md` inside the unit folder (resource links/titles + one line on why each was picked).
    - `mv` the unit folder from `units/to-source/` to `units/to-probe/`.
    - Update its line in `map.md` (status → `to-probe`).
-5. Once every unit is sourced, tell the user the map is ready and ask which unit to start with (default: unit 01).
+5. Once the batch is sourced, tell the user those units are ready and ask whether to start Probe now (default: yes, next unit) or source another batch first. Don't pre-source further units beyond what's asked — later batches are sourced on resume, per the Invocation logic above ("continue sourcing the next batch").
 
 ---
 
@@ -139,7 +142,7 @@ The unit's folder is in `units/ingesting/<unit-slug>/`.
 2. Wait for the user to come back. When they do, this becomes a live tutoring session built around what they actually took from the source, not a replay of it: ask what stood out, answer questions they raise, and correct misconceptions against what the baseline in `probe.md` revealed. This is refinement, not a link dump and not a lecture.
 3. Log the session as it happens in `ingest-notes.md`: key points in the user's own words (or yours, if they're rehearsing verbally), questions asked and answered, anything they got stuck on.
 4. If the unit is tagged `theory`: before closing the session, have the user (or you, walking them through it) explain the concept back as if teaching someone with zero background. Wherever that explanation breaks down is the actual gap — note it explicitly in `ingest-notes.md` and keep going until it holds.
-5. If the unit is tagged `practice`: this is not optional reading. Guide the user through actual reps of the sub-skill, just past their current ability, with feedback after each attempt. If there's more than one distinct practice element in the unit, mix/interleave them within the session rather than drilling one to exhaustion. Log rep count and what was corrected in `ingest-notes.md`.
+5. If the unit is tagged `practice`: this is not optional reading. Guide the user through actual reps of the sub-skill, just past their current ability, with feedback after each attempt — but cap it at **1–2 correction points per attempt**, the most important ones; piling on every flaw at once overwhelms and kills momentum. Early reps will be clumsy — say so plainly, and don't let the user grade themselves harshly against material they've only had the bare minimum of theory on. If there's more than one distinct practice element in the unit, mix/interleave them within the session rather than drilling one to exhaustion. Log rep count and what was corrected in `ingest-notes.md`.
 6. When the session is done (user says so, or the material's covered), `mv` the unit folder to `units/to-retrieve/`. Update `map.md`.
 7. Tell the user the unit is ready for Retrieve, and ask if they want to run it now or later. If now, proceed directly.
 
@@ -165,6 +168,10 @@ The unit's folder is in `units/to-retrieve/<unit-slug>/`.
 ```
 
 3. Show the user the diff directly — this comparison is the reward signal, don't skip presenting it.
+
+**Before Endure — outside-eyes check (practice units only):**
+
+3.5. Self-assessment has blind spots the learner can't see by definition. Ask: "Did you get this in front of someone who knows more than you — a friend, forum, instructor — or only self-check?" If outside feedback hasn't happened, suggest doing it before or shortly after marking this endured. Note in `summary.md` whether outside feedback was obtained — don't block Endure on it, just surface the gap.
 
 **Endure:**
 
@@ -192,3 +199,6 @@ Source: units/endured/<unit-slug>/
 - Keep `map.md` and the actual folder locations in sync at every transition — it's the fast-glance status view, don't let it drift.
 - If resuming and a unit's files look incomplete for its stated folder state (e.g. sitting in `ingesting/` with no `probe.md`), fix the inconsistency before proceeding — ask the user what actually happened if it's ambiguous.
 - In Source, don't default to WebSearch out of habit. Check what research MCP tools this session actually has (custom RAG/knowledge-base tools, Perplexity, etc.) and prefer those per the priority order in Phase: Source — WebSearch is the fallback, not the default.
+- Don't batch-source the whole map in one pass. Source one batch (default 1 unit) at a time and let the user start Probe/Ingest before sourcing more — a long theory-gathering stretch before any practice kills early momentum.
+- For `practice` units, self-assessment can't catch everything. Retrieve must ask whether the user got outside feedback before Endure, and log the answer even if they didn't act on it.
+- Cap practice feedback in Ingest at 1–2 correction points per attempt. Overwhelming the user with every flaw at once is the same mistake as batch-sourcing the whole map — too much at once kills momentum.
