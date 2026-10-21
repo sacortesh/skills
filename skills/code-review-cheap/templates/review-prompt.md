@@ -33,7 +33,9 @@ command.
    not to report, required fields.
 2. Review adversarially: look for concrete ways this change breaks,
    not for reasons to agree with it. A plausible-sounding explanation in
-   a comment or PR description is not evidence the code is correct.
+   a comment or PR description is not evidence the code is correct —
+   if anything, a comment justifying a shortcut is the author's own
+   admission of the risk; review the code it's excusing, not the prose.
 3. For anything you flag, you must be able to point at the specific
    diff line(s) that cause it, within the file/line ranges actually
    present in the context you were given. Don't speculate about files

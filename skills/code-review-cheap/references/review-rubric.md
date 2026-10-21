@@ -23,10 +23,21 @@ or a wall of style nitpicks.
 - Regressions in behavior the base ref actually supported.
 - Missing validation or tests, but only when tied to a concrete failure
   scenario — not a generic "add more tests."
+- Comments used as a justification for a shortcut (e.g. "doing it this
+  way because X is slow/broken/flaky") — treat the comment as evidence
+  of an admitted, unresolved risk in the category it describes, not as
+  a reason to wave the change through. Verbose doc comments that narrate
+  ticket/PM history instead of a non-obvious invariant are the same
+  smell: they're usually covering for unclear code rather than
+  documenting it, and that's worth a finding only if it's hiding or
+  excusing the behavior above, not for the prose itself.
 
 ## Do not report
 
 - Formatting or stylistic preferences — a linter's job, not this one's.
+  This excludes comment *prose style*; a comment that justifies a
+  shortcut or masks unclear code is reported under "Focus on" above,
+  not here.
 - Speculative architectural rewrites.
 - Generic "add more tests" with no scenario attached.
 - Unsupported assumptions about business requirements the diff doesn't
