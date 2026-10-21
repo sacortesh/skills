@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """
 Collect a git diff between two refs, resolved to immutable SHAs, with
-generated/vendor/binary files excluded and lockfiles/manifests summarized
-rather than dumped whole.
+generated/vendor/binary files excluded, lockfiles/manifests summarized
+rather than dumped whole, and verbose documentation files (.md/.mdx/.rst/
+.adoc past DOC_LARGE_LINE_THRESHOLD changed lines) triaged by sniffing the
+first DOC_SAMPLE_LINES added lines for decision-shaped content before
+deciding whether the full diff is worth a reviewer's context budget. A doc
+file under the threshold is never triaged — it goes through unchanged,
+same as any other file. See references/risk-heuristics.md.
 
 Never switches branches or touches the working tree — every read goes
 through `git show`/`git diff <sha>..<sha>`, never `git checkout`.
@@ -30,6 +35,23 @@ LOCKFILE_MANIFEST_PATTERNS = [
 ]
 
 MAX_HUNK_CHARS = 20000  # per-file cap; oversized diffs get truncated with a note, never silently.
+
+DOC_EXTENSIONS = {".md", ".mdx", ".rst", ".adoc"}
+DOC_LARGE_LINE_THRESHOLD = 300  # additions+deletions in a single doc file before triage kicks in.
+DOC_SAMPLE_LINES = 60  # only the first N *added* lines are sniffed — never the whole file.
+
+# Decision-shaped content worth a reviewer's attention: tables, code/schema
+# blocks, normative language, concrete numeric limits, API/contract nouns,
+# HTTP route docs. Pure prose/ticket-narration matches none of these.
+DOC_VALUE_SIGNAL_PATTERNS = [
+    r"^\s*\|.+\|\s*$",
+    r"^```",
+    r"(?i)\b(MUST|SHALL|REQUIRED|SHOULD NOT|MUST NOT)\b",
+    r"(?i)\bthreshold\b",
+    r"\b\d+(\.\d+)?\s*(ms|s|%|px|MB|GB)\b",
+    r"(?i)\b(endpoint|route|schema|signature|interface|contract)\b",
+    r"^\s*(GET|POST|PUT|PATCH|DELETE)\s+/",
+]
 
 
 def run_git(repo_path: str, args: list[str], timeout: int = 30) -> subprocess.CompletedProcess:
@@ -94,6 +116,27 @@ def get_file_hunks(repo_path: str, base_sha: str, head_sha: str, path: str) -> s
     return text
 
 
+def sniff_doc_value(hunk_text: str, sample_lines: int = DOC_SAMPLE_LINES) -> dict:
+    """
+    Looks only at the first `sample_lines` *added* lines — the new content a
+    reviewer would actually be judging, not the unchanged surrounding text.
+    A verdict of "skipped" means nothing in the sample matched a
+    decision-shaped signal; it's a sampling heuristic, not a full read, so
+    the caller must record it as an explicit coverage omission, never a
+    silent drop.
+    """
+    added_lines = [l[1:] for l in hunk_text.splitlines() if l.startswith("+") and not l.startswith("+++")]
+    sample = added_lines[:sample_lines]
+    sample_text = "\n".join(sample)
+    matched = [p for p in DOC_VALUE_SIGNAL_PATTERNS if re.search(p, sample_text, flags=re.MULTILINE)]
+    return {
+        "sampled_lines": len(sample),
+        "verdict": "valuable" if matched else "skipped",
+        "matched_signals": matched,
+        "sample_excerpt": sample_text,
+    }
+
+
 def summarize_lockfile_manifest(repo_path: str, base_sha: str, head_sha: str, path: str) -> str:
     """Line-level added/removed dependency entries, not the full file."""
     out = run_git(repo_path, ["diff", "--unified=0", f"{base_sha}..{head_sha}", "--", path])
@@ -126,6 +169,7 @@ def collect(repo_path: str, base_ref: str, head_ref: str, use_merge_base: bool) 
 
     files = []
     exclusions = []
+    doc_triage_skips = []
     for path in sorted(set(numstat) | set(name_status)):
         stat = numstat.get(path, {})
         status_info = name_status.get(path, {"status": "modified", "from": None})
@@ -155,7 +199,23 @@ def collect(repo_path: str, base_ref: str, head_ref: str, use_merge_base: bool) 
             files.append(entry)
             continue
 
-        entry["hunks"] = get_file_hunks(repo_path, compare_base_sha, head_sha, path)
+        hunks = get_file_hunks(repo_path, compare_base_sha, head_sha, path)
+        changed_lines = (stat.get("additions") or 0) + (stat.get("deletions") or 0)
+        is_doc = Path(path).suffix.lower() in DOC_EXTENSIONS
+
+        if is_doc and changed_lines > DOC_LARGE_LINE_THRESHOLD:
+            triage = sniff_doc_value(hunks)
+            entry["doc_triage"] = triage
+            if triage["verdict"] == "skipped":
+                reason = (f"verbose doc ({changed_lines} changed lines): sampled the first "
+                          f"{triage['sampled_lines']} added lines, found no decision-shaped "
+                          f"content (table/code block/MUST-SHALL/threshold/contract keyword)")
+                entry["note"] = reason + " — full hunks omitted, not reviewed."
+                doc_triage_skips.append({"path": path, "changed_lines": changed_lines, "reason": reason})
+                files.append(entry)
+                continue
+
+        entry["hunks"] = hunks
         files.append(entry)
 
     return {
@@ -167,6 +227,7 @@ def collect(repo_path: str, base_ref: str, head_ref: str, use_merge_base: bool) 
         "compared_against": compare_base_sha,
         "files": files,
         "exclusions": exclusions,
+        "doc_triage_skips": doc_triage_skips,
     }
 
 

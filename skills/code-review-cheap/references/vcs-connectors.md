@@ -64,6 +64,13 @@ host's API rate limits for the part that actually matters.
   `#<number>` mentions as a weaker signal. Never asserted as a complete
   list — `build_context.py` records it as "linked issues found," not
   "the linked issues."
+- **Post comments** (opt-in, `scripts/post_comments.py`, not part of
+  the two-function connector interface above): posts all validated
+  findings as inline comments in a single GitHub review (`gh api
+  .../pulls/<n>/reviews`, `event: COMMENT`) — one API call regardless
+  of finding count. Only runs when the user's request explicitly asks
+  for it (see `SKILL.md` Step 7); detecting the connector is never
+  itself a reason to post.
 
 ## Bitbucket (not implemented — how to add it)
 
@@ -79,6 +86,9 @@ host's API rate limits for the part that actually matters.
   property.
 - Add `scripts/connectors/bitbucket.py` implementing the same two
   functions, then register it in `detect_connector.py`'s connector list.
+- No comment-posting equivalent to `post_comments.py` yet — would need
+  the Bitbucket REST API's "Create a pull request comment" endpoint and
+  the same credential handling called out above.
 
 ## GitLab (not implemented — how to add it)
 
@@ -92,6 +102,9 @@ host's API rate limits for the part that actually matters.
   separate credential handling, so this is the easier of the two to add.
   Same addition steps as Bitbucket above (new connector module, new
   registry entry).
+- No comment-posting equivalent to `post_comments.py` yet — `glab api
+  projects/:id/merge_requests/:iid/discussions` is the closest match to
+  GitHub's single-review-with-comments call.
 
 ## Detection order and fallback
 

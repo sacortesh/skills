@@ -70,6 +70,10 @@ def render_markdown(meta: dict, risk: dict, checks: dict | None, manifest: dict,
         lines.append("  - Some context was omitted for budget reasons — see `review.json`'s `context_manifest.omitted` for exactly what.")
     for item in manifest.get("omitted", [])[:10]:
         lines.append(f"  - omitted: {item['kind']} ({item['source']}) — {item['reason']}")
+    if meta.get("doc_triage_skips"):
+        lines.append(f"- {len(meta['doc_triage_skips'])} verbose documentation file(s) sampled and skipped — not reviewed:")
+        for item in meta["doc_triage_skips"][:10]:
+            lines.append(f"  - `{item['path']}` ({item['changed_lines']} changed lines) — {item['reason']}")
     if validation.get("rejected_findings"):
         lines.append(f"- {len(validation['rejected_findings'])} candidate finding(s) rejected during validation (invalid, unverifiable location, or duplicate of a deterministic check) — see `review.json`.")
     if validation.get("omitted_for_cap"):
@@ -131,6 +135,7 @@ def main():
         "merge_base_sha": diff.get("merge_base_sha"),
         "pipeline_status": pipeline_status,
         "disposition": disposition,
+        "doc_triage_skips": diff.get("doc_triage_skips", []),
     }
 
     review_json = {

@@ -1,6 +1,6 @@
 ---
 name: code-review-cheap
-description: Runs a cheap, targeted code review against a git diff — deterministic evidence first (existing lint/test/typecheck results, heuristic risk scoring, bounded "smart context" built outward from the diff), then exactly one independent AI review pass (Sonnet, medium effort) validated against a strict output schema before anything is reported. Finds concrete correctness, security, contract-mismatch, and regression problems with evidence and a verification status; never approves, merges, auto-fixes, or posts comments on its own. Detects a GitHub/Bitbucket/GitLab remote via a pluggable connector (GitHub implemented) to pull PR intent, or works local-only without one. Use when the user wants a quick, low-cost review of a diff, PR, or branch instead of — or before — a full multi-agent review, or asks to "review this PR," "review this diff," or "review these changes cheaply."
+description: Runs a cheap, targeted code review against a git diff — deterministic evidence first (existing lint/test/typecheck results, heuristic risk scoring, bounded "smart context" built outward from the diff), then exactly one independent AI review pass (Sonnet, medium effort) validated against a strict output schema before anything is reported. Finds concrete correctness, security, contract-mismatch, and regression problems with evidence and a verification status; never approves, merges, or auto-fixes, and never posts PR comments unless the user explicitly asks for that in the same request. Detects a GitHub/Bitbucket/GitLab remote via a pluggable connector (GitHub implemented) to pull PR intent and, on request, post findings as inline review comments, or works local-only without one. Use when the user wants a quick, low-cost review of a diff, PR, or branch instead of — or before — a full multi-agent review, or asks to "review this PR," "review this diff," or "review these changes cheaply."
 ---
 
 # Code Review — Cheap
@@ -17,6 +17,7 @@ description: Runs a cheap, targeted code review against a git diff — determini
   - Step 4 — Build smart context
   - Step 5 — One independent AI review
   - Step 6 — Validate and render
+  - Step 7 — Post comments (opt-in, GitHub only)
 - Output conventions
 - What this doesn't do yet
 
@@ -39,7 +40,9 @@ Carried over deliberately, not because they're hard but because they
 change what this tool is:
 
 - Autonomous approval, merging, or code fixes.
-- Automatic PR-comment posting on GitHub/Bitbucket/GitLab.
+- Posting PR comments *without being asked for it in that request* —
+  Step 7 exists, but it never runs by default, and it is never chained
+  automatically after a plain "review this PR."
 - Full-codebase embedding/indexing or a complete cross-language call
   graph — `build_context.py`'s caller/callee search is bounded text
   search, always labeled "candidate," never asserted as verified or
@@ -99,9 +102,14 @@ python3 scripts/collect_diff.py --repo <repo> --base <base_ref> --head <head_ref
 ```
 
 This resolves both refs to immutable SHAs (recorded in every later
-output), excludes generated/vendor/binary files, and summarizes
-lockfile/manifest diffs instead of dumping them. Report the exclusions
-to the user in one line — don't bury them.
+output), excludes generated/vendor/binary files, summarizes
+lockfile/manifest diffs instead of dumping them, and — for a
+`.md`/`.mdx`/`.rst`/`.adoc` file past `DOC_LARGE_LINE_THRESHOLD` changed
+lines — samples the first lines for decision-shaped content before
+deciding whether the full diff is worth reviewing (see
+`references/risk-heuristics.md`'s "Documentation triage" section).
+Report both the exclusions and any doc-triage skips (`doc_triage_skips`)
+to the user in one line each — don't bury either.
 
 ### Step 2 — Deterministic evidence
 
@@ -186,6 +194,31 @@ separate billing to track here).
 Then call this environment's own `ReportFindings` tool with the
 validated findings list (most-severe first) so the review also renders
 natively in this session, in addition to the persisted files.
+
+### Step 7 — Post comments (opt-in, GitHub only)
+
+Only run this step if the user's request explicitly asked for findings
+to be posted to the PR (e.g. "review this PR and comment," "post the
+findings") — never because a GitHub connector was detected, never
+because the run found findings, and never on a plain "review this PR."
+Posting to a shared PR is visible to everyone on it and not cleanly
+reversible, so confirm with the user before running this even when
+they asked for it in the same message, unless they've already stated a
+standing preference to skip that confirmation.
+
+If `validated_findings` is non-empty and the connector is `github`:
+
+```
+python3 scripts/post_comments.py --repo <repo> --pr <number-or-url> --validated-findings <validated.json>
+```
+
+This posts exactly one GitHub review (`gh api .../pulls/<n>/reviews`,
+`event: COMMENT`) containing one inline comment per validated finding,
+anchored to its file/line/side — one API call for the whole batch, not
+one per finding, and never an approval or change request. Not available
+for Bitbucket/GitLab — no connector there yet (see
+`references/vcs-connectors.md`); tell the user and fall back to the
+rendered report only.
 
 ## Output conventions
 

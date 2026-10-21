@@ -56,6 +56,31 @@ Risk level never changes the model, the effort level, or the call count
 — those stay fixed (sonnet, medium, one call) regardless of risk. Risk
 only reallocates the fixed budget and sets the human-review flag.
 
+## Documentation triage (collect_diff.py, not assess_risk.py)
+
+A sibling deterministic heuristic, same spirit, different script: a
+`.md`/`.mdx`/`.rst`/`.adoc` file under `DOC_LARGE_LINE_THRESHOLD` changed
+lines goes through untouched, exactly like any other file — no triage,
+no special-casing. Past that threshold, `collect_diff.py` samples only
+the first `DOC_SAMPLE_LINES` *added* lines for decision-shaped content
+(a table, a code/schema block, normative language, a concrete numeric
+limit, an API/contract noun, an HTTP route) before deciding whether the
+full diff earns a place in Step 4's context budget. No signal in the
+sample → the full hunks are swapped for a short note, the sample
+excerpt is kept for audit, and the skip is recorded in
+`doc_triage_skips` — surfaced in `review.md`'s coverage section, never
+silently dropped. The point isn't "docs don't matter"; it's that a
+400-line narrative rewrite and a 400-line spec change cost the same
+tokens to review but not the same tokens to skip, and pure
+ticket-narration prose is the case this exists to catch cheaply.
+
+This is a sampling heuristic, not a full read — a load-bearing
+invariant past line 60 of an otherwise-prose-shaped doc will be missed.
+That's the explicit trade for keeping this at zero model cost; see
+review-rubric.md's note on comments for the related judgment that a
+verbose doc narrating process instead of invariants is itself a smell,
+not just a cost problem.
+
 ## Stated limitations
 
 These are keyword/path heuristics, not static analysis — they will miss
